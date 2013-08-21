@@ -48,7 +48,7 @@
 using namespace std;
 using namespace glm;
 
-/*data structure for the image used for  texture mapping */
+/*data structure for the image used for  texture mapping 
 typedef struct Image {
   unsigned long sizeX;
   unsigned long sizeY;
@@ -68,13 +68,12 @@ RGB* g_pixel;
 
 //forward declaration of image loading and texture set-up code
 int ImageLoad(char *filename, Image *image);
-GLvoid LoadTexture(char* image_file, int tex_id);
+GLvoid LoadTexture(char* image_file, int tex_id); */
 ////////////////
 // Globals :( //
 ////////////////
 
 // Parameters
-unsigned int const StepSize = 10;
 unsigned int WindowWidth = 1000, WindowHeight = 1000;
 
 // Meshes
@@ -92,7 +91,7 @@ GLuint uProjMatrix;
 GLuint uColor;
 GLuint uShiny;
 GLuint uSpecular;
-GLuint aTexCoord, uTexUnit;
+//GLuint aTexCoord, uTexUnit;
 GLuint GrndBuffObj, GIndxBuffObj, GNormalBuffObj, TexBuffObj;
 int g_GiboLen;
 
@@ -101,7 +100,6 @@ GLuint ShadeProg;
 
 
 // Program Variables
-float Accumulator;
 float CameraHeight;
 float px, py;
 vec3 lookpt = vec3(0.f, 0.f, 0.f);
@@ -205,8 +203,8 @@ bool InstallShader(std::string const & vShaderName, std::string const & fShaderN
     uShiny          = safe_glGetUniformLocation(ShadeProg,  "uShiny");
     uSpecular       = safe_glGetUniformLocation(ShadeProg,  "uSpecular");
     
-    aTexCoord = safe_glGetAttribLocation(ShadeProg,  "aTexCoord");
-    uTexUnit = safe_glGetUniformLocation(ShadeProg, "uTexUnit");
+    //aTexCoord = safe_glGetAttribLocation(ShadeProg,  "aTexCoord");
+    //uTexUnit = safe_glGetUniformLocation(ShadeProg, "uTexUnit");
   
     std::cout << "Sucessfully installed shader " << ShadeProg << std::endl;
     return true;
@@ -658,10 +656,10 @@ void Draw()
     ModelTrans.loadIdentity();
     SetModel();
   //set up the texture unit
-  glEnable(GL_TEXTURE_2D);
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_2D, 2);
-  safe_glUniform1i(uTexUnit, 2);
+  //glEnable(GL_TEXTURE_2D);
+  //glActiveTexture(GL_TEXTURE2);
+  //glBindTexture(GL_TEXTURE_2D, 2);
+  //safe_glUniform1i(uTexUnit, 2);
 
   safe_glEnableVertexAttribArray(aPosition);
   
@@ -675,10 +673,10 @@ void Draw()
   glBindBuffer(GL_ARRAY_BUFFER, GNormalBuffObj);
   safe_glVertexAttribPointer(aNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
   
-  safe_glEnableVertexAttribArray(aTexCoord);
+  /*safe_glEnableVertexAttribArray(aTexCoord);
   glBindBuffer(GL_ARRAY_BUFFER, TexBuffObj);
   safe_glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0); 
-  
+  */
   glUniform3f(uColor, 0.5, 1, 0.3);
   glUniform1f(uShiny, 100);
   glUniform3f(uSpecular, .8, .8, .8);
@@ -689,7 +687,7 @@ void Draw()
   // Disable the attributes used by our shader
   safe_glDisableVertexAttribArray(aPosition);
   safe_glDisableVertexAttribArray(aNormal); 
-  glDisable(GL_TEXTURE_2D);
+  //glDisable(GL_TEXTURE_2D);
   
         safe_glEnableVertexAttribArray(aPosition);
         glBindBuffer(GL_ARRAY_BUFFER, Meshes[0]->PositionHandle);
@@ -895,16 +893,10 @@ void mouseMove(int x, int y) {
 
   glutPostRedisplay();
 }
-void Timer(int param)
-{
-    Accumulator += StepSize * 0.001f;
-    glutTimerFunc(StepSize, Timer, 1);
-}
 
 int main(int argc, char *argv[])
 {
     // Initialize Global Variables
-    Accumulator = 0.f;
     CameraHeight = 5.f;
     CurrentMesh = 0;
 
@@ -919,7 +911,6 @@ int main(int argc, char *argv[])
     glutKeyboardFunc(Keyboard);
     glutMouseFunc( mouse );
     glutMotionFunc( mouseMove );
-    //glutTimerFunc(StepSize, Timer, 1);
 
     // GLEW Setup (Windows only)
 #ifdef _WIN32
@@ -933,7 +924,7 @@ int main(int argc, char *argv[])
 
     // OpenGL Setup
     Initialize();
-    LoadTexture((char *)"dirt.bmp", 0);
+    //LoadTexture((char *)"dirt.bmp", 0);
   
   
     initGround();
@@ -965,7 +956,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 //routines to load in a bmp files - must be 2^nx2^m and a 24bit bmp
-GLvoid LoadTexture(char* image_file, int texID) { 
+/*GLvoid LoadTexture(char* image_file, int texID) {
   
   TextureImage = (Image *) malloc(sizeof(Image));
   if (TextureImage == NULL) {
@@ -975,18 +966,20 @@ GLvoid LoadTexture(char* image_file, int texID) {
   cout << "trying to load " << image_file << endl;
   if (!ImageLoad(image_file, TextureImage)) {
     exit(1);
-  }  
+  }  */
   /*  2d texture, level of detail 0 (normal), 3 components (red, green, blue),            */
   /*  x size from image, y size from image,                                              */    
   /*  border 0 (normal), rgb color data, unsigned byte data, data  */ 
-  glBindTexture(GL_TEXTURE_2D, texID);
+  /*glBindTexture(GL_TEXTURE_2D, texID);
   glTexImage2D(GL_TEXTURE_2D, 0, 3,
                TextureImage->sizeX, TextureImage->sizeY,
                0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage->data);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST); /*  cheap scaling when image bigger than texture */    
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST); /*  cheap scaling when image smalled than texture*/
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST); 
+   //cheap scaling when image bigger than texture
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST); 
+   //cheap scaling when image smalled than texture
   
-}
+}*/
 
 
 /* BMP file loader loads a 24-bit bmp file only */
@@ -994,10 +987,10 @@ GLvoid LoadTexture(char* image_file, int texID) {
 /*
  * getint and getshort are help functions to load the bitmap byte by byte
  */
-static unsigned int getint(FILE *fp) {
+/*static unsigned int getint(FILE *fp) {
   int c, c1, c2, c3;
   
-  /*  get 4 bytes */ 
+  //  get 4 bytes  
   c = getc(fp);  
   c1 = getc(fp);  
   c2 = getc(fp);  
@@ -1012,60 +1005,61 @@ static unsigned int getint(FILE *fp) {
 static unsigned int getshort(FILE *fp){
   int c, c1;
   
-  /* get 2 bytes*/
+  // get 2 bytes
   c = getc(fp);  
   c1 = getc(fp);
   
   return ((unsigned int) c) + (((unsigned int) c1) << 8);
 }
 
-/*  quick and dirty bitmap loader...for 24 bit bitmaps with 1 plane only.  */
+//  quick and dirty bitmap loader...for 24 bit bitmaps with 1 plane only.  
 
 int ImageLoad(char *filename, Image *image) {
   FILE *file;
-  unsigned long size;                 /*  size of the image in bytes. */
-  unsigned long i;                    /*  standard counter. */
-  unsigned short int planes;          /*  number of planes in image (must be 1)  */
-  unsigned short int bpp;             /*  number of bits per pixel (must be 24) */
-  char temp;                          /*  used to convert bgr to rgb color. */
+  unsigned long size;                 //  size of the image in bytes.
+  unsigned long i;                    //  standard counter.
+  unsigned short int planes;          //  number of planes in image (must b 1)
+  unsigned short int bpp;             //  number of bits per pixel (must be 24) 
+  char temp;                          //  used to convert bgr to rgb color. 
   
-  /*  make sure the file is there. */
+  //  make sure the file is there. 
   if ((file = fopen(filename, "rb"))==NULL) {
     printf("File Not Found : %s\n",filename);
     return 0;
   }
   
-  /*  seek through the bmp header, up to the width height: */
+  //  seek through the bmp header, up to the width height:
   fseek(file, 18, SEEK_CUR);
   
-  /*  No 100% errorchecking anymore!!! */
+  //  No 100% errorchecking anymore!!!
   
-  /*  read the width */    image->sizeX = getint (file);
+  //  read the width 
+ image->sizeX = getint (file);
   
-  /*  read the height */ 
+  //  read the height 
   image->sizeY = getint (file);
   
-  /*  calculate the size (assuming 24 bits or 3 bytes per pixel). */
+  //  calculate the size (assuming 24 bits or 3 bytes per pixel).
   size = image->sizeX * image->sizeY * 3;
   
-  /*  read the planes */    
+  //  read the planes    
   planes = getshort(file);
   if (planes != 1) {
     printf("Planes from %s is not 1: %u\n", filename, planes);
     return 0;
   }
   
-  /*  read the bpp */    
+  //  read the bpp  
   bpp = getshort(file);
   if (bpp != 24) {
     printf("Bpp from %s is not 24: %u\n", filename, bpp);
     return 0;
   }
   
-  /*  seek past the rest of the bitmap header. */
+  //  seek past the rest of the bitmap header.
   fseek(file, 24, SEEK_CUR);
   
-  /*  read the data.  */
+  //  read the data.  
   image->data = (char *) malloc(size);
   if (image->data == NULL) {
     printf("Error allocating memory for color-corrected image data");
@@ -1077,14 +1071,14 @@ int ImageLoad(char *filename, Image *image) {
     return 0;
   }
   
-  for (i=0;i<size;i+=3) { /*  reverse all of the colors. (bgr -> rgb) */
+  for (i=0;i<size;i+=3) { //  reverse all of the colors. (bgr -> rgb)
     temp = image->data[i];
     image->data[i] = image->data[i+2];
     image->data[i+2] = temp;
   }
   
-  fclose(file); /* Close the file and release the filedes */
+  fclose(file); // Close the file and release the filedes
   
-  /*  we're done. */
+  //  we're done.
   return 1;
-}
+}*/
