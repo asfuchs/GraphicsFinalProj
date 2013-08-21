@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="GLSL_helper.h" />
+    <ClInclude Include="MStackHelp.h" />
+    <ClInclude Include="GeometryCreator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GLSL_helper.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MStackHelp.cpp" />
+    <ClCompile Include="GeometryCreator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Diffuse.frag" />
+    <None Include="Diffuse.vert" />
+  </ItemGroup>
+</Project>
